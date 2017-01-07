@@ -304,60 +304,6 @@ def drop_privileges():
     print('privileges dropped, running as "{}:{}"'.format(new_user.pw_name, new_group.gr_name))
 
 
-def add_meta_tag(page_dir, index_page):
-    google_content = config['WEB-TOOLS']['google']
-    bing_content = config['WEB-TOOLS']['bing']
-
-    if not google_content and not bing_content:
-        return
-
-    main_page_path = os.path.join(pages_folder, page_dir, index_page)
-    with open(main_page_path) as main:
-        main_page = main.read()
-    soup = BeautifulSoup(main_page, 'html.parser')
-
-    if (google_content and
-                soup.find("meta", attrs={"name": "google-site-verification"}) is None):
-        google_meta = soup.new_tag('meta')
-        google_meta.attrs['name'] = 'google-site-verification'
-        google_meta.attrs['content'] = google_content
-        soup.head.append(google_meta)
-    if (bing_content and
-                soup.find("meta", attrs={"name": "msvalidate.01"}) is None):
-        bing_meta = soup.new_tag('meta')
-        bing_meta.attrs['name'] = 'msvalidate.01'
-        bing_meta.attrs['content'] = bing_content
-        soup.head.append(bing_meta)
-
-    html = soup.prettify("utf-8")
-    with open(main_page_path, "wb") as file:
-        file.write(html)
-
-
-def compare_version_info(timeout):
-    while True:
-        repo = git.Repo(os.getcwd())
-        try:
-            rem = repo.remote()
-            res = rem.fetch()
-            diff_list = res[0].commit.diff(repo.heads.master)
-        except TimeoutError:
-            print('timeout fetching the repository version')
-        else:
-            if diff_list:
-                print('you are running an outdated version, SNARE will be updated and restarted')
-                repo.git.reset('--hard')
-                repo.heads.master.checkout()
-                repo.git.clean('-xdf')
-                repo.remotes.origin.pull()
-                pip.main(['install', '-r', 'requirements.txt'])
-                os.execv(sys.executable, [sys.executable, __file__] + sys.argv[1:])
-                return
-            else:
-                print('you are running the latest version')
-            time.sleep(timeout)
-
-
 def parse_timeout(timeout):
     result = None
     timeouts_coeff = {
@@ -422,10 +368,6 @@ if __name__ == '__main__':
     if not os.path.exists(pages_folder + args.page_dir):
         print("--page-dir: {0} does not exist".format(args.page_dir))
         exit()
-    if not os.path.exists(pages_folder + args.page_dir + "/" + args.index_page):
-        print('can\'t crate meta tag')
-    else:
-        add_meta_tag(args.page_dir, args.index_page)
     loop = asyncio.get_event_loop()
     loop.run_until_complete(check_tanner_connection())
 
