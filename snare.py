@@ -45,6 +45,7 @@ import cssutils
 import netifaces as ni
 
 pages_folder = '/opt/tesis/pages/'
+snare_folder = '/opt/tesis/snare'
 
 class HttpRequestHandler(aiohttp.server.ServerHttpProtocol):
     def __init__(self, run_args, debug=False, keep_alive=75, **kwargs):
@@ -399,26 +400,19 @@ if __name__ == '__main__':
     snare_uuid = snare_setup()
     parser = argparse.ArgumentParser()
     page_group = parser.add_mutually_exclusive_group(required=True)
-    page_group.add_argument("--page-dir", help="name of the folder to be served")
+    page_group.add_argument("--page-dir", help="name of the folder pages")
     page_group.add_argument("--list-pages", help="list available pages", action='store_true')
-    parser.add_argument("--index-page", help="file name of the index page", default='index.html')
+    parser.add_argument("--index-page", default='index.html')
     parser.add_argument("--port", help="port to listen on", default='8080')
     parser.add_argument("--interface", help="interface to bind to")
     parser.add_argument("--host-ip", help="host ip to bind to", default='localhost')
     parser.add_argument("--debug", help="run web server in debug mode", default=False)
-    parser.add_argument("--tanner", help="ip of the tanner service", default='tanner.mushmush.org')
-    
-    
-    
-    
+    parser.add_argument("--tanner", help="ip of the tanner service", default='127.0.0.1')
     parser.add_argument("--config", help="snare config file", default='snare.cfg')
-    
-    
     args = parser.parse_args()
 
     config = configparser.ConfigParser()
-    config.read('/opt/snare/' + args.config)
-    
+    config.read(snare_folder + args.config)
     if args.list_pages:
         print('Available pages:\n')
         for page in os.listdir(pages_folder):
