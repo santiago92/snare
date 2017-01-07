@@ -44,6 +44,8 @@ from bs4 import BeautifulSoup
 import cssutils
 import netifaces as ni
 
+pages_folder = '/opt/tesis/pages/'
+
 class HttpRequestHandler(aiohttp.server.ServerHttpProtocol):
     def __init__(self, run_args, debug=False, keep_alive=75, **kwargs):
         self.dorks = []
@@ -405,18 +407,18 @@ if __name__ == '__main__':
     parser.add_argument("--host-ip", help="host ip to bind to", default='localhost')
     parser.add_argument("--debug", help="run web server in debug mode", default=False)
     parser.add_argument("--tanner", help="ip of the tanner service", default='tanner.mushmush.org')
-    parser.add_argument("--skip-check-version", help="skip check for update", action='store_true')
-    parser.add_argument("--slurp-enabled", help="enable nsq logging", action='store_true')
-    parser.add_argument("--slurp-host", help="nsq logging host", default='slurp.mushmush.org')
-    parser.add_argument("--slurp-auth", help="nsq logging auth", default='slurp')
+    
+    
+    
+    
     parser.add_argument("--config", help="snare config file", default='snare.cfg')
-    parser.add_argument("--auto-update", help="auto update SNARE if new version available ", default=True)
-    parser.add_argument("--update-timeout", help="update snare every timeout ", default='24H')
+    
+    
     args = parser.parse_args()
 
     config = configparser.ConfigParser()
     config.read('/opt/snare/' + args.config)
-    pages_folder = '/home/tesis/pages/'
+    
     if args.list_pages:
         print('Available pages:\n')
         for page in os.listdir(pages_folder):
@@ -434,11 +436,7 @@ if __name__ == '__main__':
     loop.run_until_complete(check_tanner_connection())
 
     pool = ProcessPoolExecutor(max_workers=multiprocessing.cpu_count())
-    compare_version_fut = None
-    if args.auto_update is True:
-        timeout = parse_timeout(args.update_timeout)
-        compare_version_fut = loop.run_in_executor(pool, compare_version_info, timeout)
-
+    print ("Pools {}".format(pool)
     if args.host_ip == 'localhost' and args.interface:
         host_ip = ni.ifaddresses(args.interface)[2][0]['addr']
     else:
@@ -455,8 +453,6 @@ if __name__ == '__main__':
     except (KeyboardInterrupt, TypeError) as e:
         print(e)
     finally:
-        if compare_version_fut:
-            compare_version_fut.cancel()
         srv.close()
         loop.run_until_complete(srv.wait_closed())
         loop.close()
