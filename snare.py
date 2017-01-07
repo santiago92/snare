@@ -269,18 +269,18 @@ def snare_setup():
         print('Snare has to be started as root!')
         sys.exit(1)
     # Create folders
-    if not os.path.exists('/opt/snare'):
-        os.mkdir('/opt/snare')
-    if not os.path.exists('/opt/snare/pages'):
-        os.mkdir('/opt/snare/pages')
+    if not os.path.exists('/opt/tesis'):
+        os.mkdir('/opt/tesis')
+    if not os.path.exists('/opt/tesis/pages'):
+        os.mkdir('/opt/tesis/pages')
     # Write pid to pid file
-    with open('/opt/snare/snare.pid', 'wb') as pid_fh:
+    with open('/opt/tesis/snare.pid', 'wb') as pid_fh:
         pid_fh.write(str(os.getpid()).encode('utf-8'))
     # Config file
-    if not os.path.exists('/opt/snare/snare.cfg'):
+    if not os.path.exists('/opt/tesis/snare.cfg'):
         create_initial_config()
     # Read or create the sensor id
-    uuid_file_path = '/opt/snare/snare.uuid'
+    uuid_file_path = '/opt/tesis/snare.uuid'
     if os.path.exists(uuid_file_path):
         with open(uuid_file_path, 'rb') as uuid_fh:
             snare_uuid = uuid_fh.read()
@@ -311,7 +311,8 @@ def add_meta_tag(page_dir, index_page):
     if not google_content and not bing_content:
         return
 
-    main_page_path = os.path.join(pages_folder, page_dir, index_page)
+    main_page_path = os.path.join(
+        , page_dir, index_page)
     with open(main_page_path) as main:
         main_page = main.read()
     soup = BeautifulSoup(main_page, 'html.parser')
