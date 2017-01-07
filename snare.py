@@ -45,7 +45,7 @@ import cssutils
 import netifaces as ni
 
 pages_folder = '/opt/tesis/pages/'
-snare_folder = '/opt/tesis/snare'
+snare_folder = '/opt/tesis/snare/'
 
 class HttpRequestHandler(aiohttp.server.ServerHttpProtocol):
     def __init__(self, run_args, debug=False, keep_alive=75, **kwargs):
