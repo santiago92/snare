@@ -430,7 +430,7 @@ if __name__ == '__main__':
     loop.run_until_complete(check_tanner_connection())
 
     pool = ProcessPoolExecutor(max_workers=multiprocessing.cpu_count())
-    print ("Pools {}".format(pool)
+    print ("Pools {}".format(pool))
     if args.host_ip == 'localhost' and args.interface:
         host_ip = ni.ifaddresses(args.interface)[2][0]['addr']
     else:
