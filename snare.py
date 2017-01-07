@@ -416,17 +416,17 @@ if __name__ == '__main__':
 
     config = configparser.ConfigParser()
     config.read('/opt/snare/' + args.config)
-
+    pages_folder = '/home/tesis/pages/'
     if args.list_pages:
         print('Available pages:\n')
-        for page in os.listdir('/opt/snare/pages/'):
+        for page in os.listdir(pages_folder):
             print('\t- {}'.format(page))
         print('\nuse with --page-dir {page_name}\n\n')
         exit()
-    if not os.path.exists('/opt/snare/pages/' + args.page_dir):
+    if not os.path.exists(pages_folder + args.page_dir):
         print("--page-dir: {0} does not exist".format(args.page_dir))
         exit()
-    if not os.path.exists('/opt/snare/pages/' + args.page_dir + "/" + args.index_page):
+    if not os.path.exists(pages_folder + args.page_dir + "/" + args.index_page):
         print('can\'t crate meta tag')
     else:
         add_meta_tag(args.page_dir, args.index_page)
