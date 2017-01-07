@@ -76,20 +76,6 @@ class HttpRequestHandler(aiohttp.server.ServerHttpProtocol):
             print('Dorks timeout')
         return dorks['response']['dorks'] if dorks else []
 
-    @asyncio.coroutine
-    def submit_slurp(self, data):
-        try:
-            with aiohttp.Timeout(10.0):
-                with aiohttp.ClientSession(connector=aiohttp.TCPConnector(verify_ssl=False)) as session:
-                    r = yield from session.post(
-                        'https://{0}:8080/api?auth={1}&chan=snare_test&msg={2}'.format(
-                            self.run_args.slurp_host, self.run_args.slurp_auth, data
-                        ), data=json.dumps(data)
-                    )
-                    assert r.status == 200
-                    r.close()
-        except Exception as e:
-            print(e)
 
     def create_data(self, request, response_status):
         data = dict(
@@ -180,9 +166,6 @@ class HttpRequestHandler(aiohttp.server.ServerHttpProtocol):
         # Submit the event to the TANNER service
         event_result = yield from self.submit_data(data)
 
-        # Log the event to slurp service if enabled
-        if self.run_args.slurp_enabled:
-            yield from self.submit_slurp(request.path)
         response = aiohttp.Response(
             self.writer, status=200, http_version=request.version
         )
