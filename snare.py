@@ -311,8 +311,7 @@ def add_meta_tag(page_dir, index_page):
     if not google_content and not bing_content:
         return
 
-    main_page_path = os.path.join(
-        , page_dir, index_page)
+    main_page_path = os.path.join(pages_folder, page_dir, index_page)
     with open(main_page_path) as main:
         main_page = main.read()
     soup = BeautifulSoup(main_page, 'html.parser')
